@@ -41,5 +41,5 @@ jobs:
           git config user.name "<a name>"
           
           git add dvc.lock
-          git commit -m {COMMIT_MSG}
+          git commit -m ${COMMIT_MSG}
           git push
