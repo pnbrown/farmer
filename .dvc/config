@@ -1,0 +1,5 @@
+[core]
+    remote = nigels-buckets
+['remote "nigels-buckets"']
+    url = s3://dvc
+    endpointurl = https://s3.us-east.cloud-object-storage.appdomain.cloud
