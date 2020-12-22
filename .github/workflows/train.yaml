@@ -27,26 +27,19 @@ jobs:
           cml-send-comment report.md
           
           dvc push
-          git config --global user.email "pnigelbrown@gmail.com"
-          git config --global user.name "pnbrown" 
-          git add dvc.lock
-          git commit -m "dvc.lock update skip ci"
-          git push
-      - name: Commit to repository
+      - uses: cml_run    
+      - name: Commit dvc.lock file
         # https://garethr.dev/2019/09/github-actions-that-commit-to-github/ 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
-            <a commit message>
+            Save dvc.lock file
             skip-checks: true
         run: |
           # Hard-code user configuration
-          git config user.email "<an email address>"
+          git config user.email "pnigelbrown@gmail.com"
           git config user.name "<a name>"
-          # Update origin with token
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          # Checkout the branch so we can push back to it
-          git checkout master
-          git add .
-          # Only commit and push if we have changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push origin master)
+          
+          git add dvc.lock
+          git commit -m {COMMIT_MSG}
+          git push
