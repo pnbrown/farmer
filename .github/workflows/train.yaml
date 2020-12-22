@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
-            "Save dvc.lock file"
+            Save dvc.lock file
             skip-checks: true
         run: |
           # Hard-code user configuration
