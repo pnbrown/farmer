@@ -34,7 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
             Save dvc.lock file
-            skip-checks: true
         run: |
           # Hard-code user configuration
           git config user.email "pnigelbrown@gmail.com"
