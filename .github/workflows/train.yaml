@@ -33,14 +33,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
-            Save dvc.lock file
+            Save dvc.lock file skip-checks: true
         run: |
           # Hard-code user configuration
           git config user.email "pnigelbrown@gmail.com"
           git config user.name "pnbrown"
           
+          git status
           git add dvc.lock
-          git commit -m $COMMIT_MSG
           # Only commit and push if we have changes
           git diff --quiet dvc.lock && git diff --staged --quiet dvc.lock || (git commit -m "${COMMIT_MSG}"; git push)
           
