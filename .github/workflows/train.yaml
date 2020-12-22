@@ -2,6 +2,7 @@ name: farmers
 on: [push]
 jobs:
   run:
+    if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
     runs-on: [ubuntu-latest]
     container: docker://dvcorg/cml-py3:latest
     steps:
@@ -14,7 +15,7 @@ jobs:
 
         run: |
           pip install -r requirements.txt
-          dvc repro 
+          dvc repro
 
           git fetch --prune
           dvc metrics diff --show-md master > report.md
@@ -25,3 +26,6 @@ jobs:
           cml-send-comment report.md
           
           dvc push
+          git add dvc.lock
+          git commit -m "dvc.lock update skip ci"
+          git push 
