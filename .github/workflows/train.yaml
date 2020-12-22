@@ -42,4 +42,6 @@ jobs:
           
           git add dvc.lock
           git commit -m $COMMIT_MSG
-          git push
+          # Only commit and push if we have changes
+          git diff --quiet dvc.lock && git diff --staged --quiet dvc.lock || (git commit -m "${COMMIT_MSG}"; git push)
+          
