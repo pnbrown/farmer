@@ -2,6 +2,8 @@ name: farmers
 on: [push]
 jobs:
   run:
+    # https://timheuer.com/blog/skipping-ci-github-actions-workflows/
+    if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
     runs-on: [ubuntu-latest]
     container: docker://dvcorg/cml-py3:latest
     steps:
@@ -9,9 +11,12 @@ jobs:
       - name: cml_run
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
         run: |
           pip install -r requirements.txt
-          dvc repro 
+          dvc repro
 
           git fetch --prune
           dvc metrics diff --show-md master > report.md
@@ -20,3 +25,22 @@ jobs:
           echo "## Validating results by region"
           cml-publish by_region.png --md >> report.md
           cml-send-comment report.md
+          
+          dvc push
+
+      - name: Commit dvc.lock file
+        # https://garethr.dev/2019/09/github-actions-that-commit-to-github/ 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_MSG: |
+            Save dvc.lock file skip-checks: true
+        run: |
+          # Hard-code user configuration
+          git config user.email "pnigelbrown@gmail.com"
+          git config user.name "pnbrown"
+          
+          git status
+          git add dvc.lock
+          # Only commit and push if we have changes
+          git diff --quiet dvc.lock && git diff --staged --quiet dvc.lock || (git commit -m "${COMMIT_MSG}"; git push)
+          
