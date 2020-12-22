@@ -38,8 +38,8 @@ jobs:
         run: |
           # Hard-code user configuration
           git config user.email "pnigelbrown@gmail.com"
-          git config user.name "<a name>"
+          git config user.name "pnbrown"
           
           git add dvc.lock
-          git commit -m ${COMMIT_MSG}
+          git commit -m ${{ COMMIT_MSG }}
           git push
